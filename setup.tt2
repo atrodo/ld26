@@ -3,8 +3,8 @@
     name  => "ld26"
     author => "atrodo"
   }
-  width  = 640
-  height = 480
+  width  = 800
+  height = 600
 
   max_do_aux           = 50
   show_phys_box        = 0
