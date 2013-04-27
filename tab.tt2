@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+[%~ PROCESS setup.tt2 ~%]
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>[% game.name %] (fission_engine)</title>
+    <link rel="stylesheet" href="aux/bootstrap.css">
+    <style type="text/css">
+      body {
+        background-color: transparent;
+      }
+      div.preload
+      {
+        height:1px;
+        width:1px;
+        overflow: hidden;
+      }
+      div.preload img
+      {
+        height: auto;
+        width: auto;
+        max-width: none;
+      }
+
+      div.client canvas
+      {
+        background-color: rgba(1, 1, 1, 0.2);
+      }
+
+      div.client progress
+      {
+        position:absolute;
+        top:0;
+        bottom:0;
+        left:0;
+        right:0;
+      }
+
+    </style>
+    <script src="aux/jquery-1.9.0.min.js"></script>
+    <script src="fission_engine/fission.js"></script>
+  </head>
+  <body>
+    [% content %]
+    <center>
+      <div id='client' class="client"></div>
+    </center>
+  </body>
+</html>

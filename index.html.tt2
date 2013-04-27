@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+[%~ PROCESS setup.tt2 ~%]
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>[% game.name %] (fission_engine)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="aux/bootstrap.css">
+    <style type="text/css">
+      body {
+        padding-top: 40px;
+        padding-bottom: 40px;
+        background-image: url("aux/bg.jpg");
+        background-position: 50% 50%;
+      }
+
+      .container.well
+      {
+        background-color: rgba(229, 229, 229, 0.7);
+      }
+
+      .views .tab-content
+      {
+        border: 1px solid gray;
+        width: 100%;
+      }
+
+      .views .tab-content iframe
+      {
+        height: 700px;
+        width: 100%;
+        border: none;
+      }
+
+    </style>
+
+    <script src="aux/jquery-1.9.0.min.js"></script>
+    <script src="aux/bootstrap.min.js"></script>
+    <script>
+      $(function()
+      {
+        $(".views .icon-refresh").click(function(e)
+        {
+          e.preventDefault();
+          console.log($(this).closest("a").attr("href"))
+          var tab = $(this).closest("a").attr("href")
+          var iframe = $(tab).find("iframe")
+          iframe.attr("src", iframe.data("src"))
+        })
+        $(".views .icon-remove").click(function(e)
+        {
+          e.preventDefault();
+          console.log($(this).closest("a").attr("href"))
+          var tab = $(this).closest("a").attr("href")
+          var iframe = $(tab).find("iframe")
+          iframe.attr("src", "")
+        })
+
+        $('iframe').each(function()
+          {
+            $(this).data("src", $(this).attr("src"))
+          });
+      })
+    </script>
+  </head>
+  <body>
+    <div class="container well">
+      <h1>[% game.name %] Dev</h1>
+
+      <div class="row">
+        <div class="span12 views">
+          [% PERL %]
+            use File::Basename qw/dirname/;
+            my $dir = dirname("[% component.name %]");
+            my @tabs = glob "$dir/tab_*.html.tt2";
+            @tabs = map { m[$dir/tab_(\w*).html.tt2$]xms } @tabs;
+            $stash->set("tabs", [@tabs]);
+          [% END %]
+          <ul class="nav nav-tabs">
+            [% FOREACH tab IN tabs %]
+            <li [% IF loop.first %]class="active"[% END %]>
+              <a href="#[% tab %]" data-toggle="tab">[% tab.ucfirst %]
+              <i class="icon-refresh"></i>
+              <i class="icon-remove"></i>
+              </a>
+            </li>
+            [% END %]
+            <li class="pull-right">
+              <a href="#editor" data-toggle="tab">Editor</a>
+            </li>
+          </ul>
+          <div class="tab-content">
+            [% FOREACH tab IN tabs %]
+            <div id="[% tab %]" class="tab-pane [% IF loop.first %]active[% ELSE %]fade[% END %]">
+              <iframe src="tab_[% tab %].html">
+              </iframe>
+            </div>
+            [% END %]
+            <div id="editor" class="tab-pane fade">
+              <iframe src="editor.html">
+              </iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <center class="span12">
+          <div id='client' class="client"></div>
+        </center>
+      </div>
+
+      <hr>
+
+      <footer>
+        <p>
+          &copy;
+          [% game.author %]
+          [% USE date ; date.format(date.now, '%Y') %]
+        </p>
+      </footer>
+
+    </div>
+  </body>
+</html>

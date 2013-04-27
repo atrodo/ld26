@@ -1,0 +1,8 @@
+[% WRAPPER tab.tt2 %]
+    <script type="text/javascript" language="javascript">
+    $(function ()
+    {
+      new Engine($('.client'))
+    })
+    </script>
+[% END %]

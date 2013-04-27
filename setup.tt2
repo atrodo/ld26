@@ -1,0 +1,25 @@
+[%
+  game = {
+    name  => "ld26"
+    author => "atrodo"
+  }
+  width  = 640
+  height = 480
+
+  max_do_aux           = 50
+  show_phys_box        = 0
+  show_draw_box        = 0
+  preload_interval     = 500
+  paint_chunk_interval = 50
+  chunk_draw_range     = 7
+
+  record       = 0
+  debug        = 0
+  show_map     = 0
+  engine_input = 1
+  show_timings = 1
+
+  tiles_bd = 0
+  tiles_xw = 16
+  tiles_yh = 16
+%]
