@@ -96,7 +96,7 @@ view_layer.add_animation(new Animation({
 var grid_xw = [% width %]
 var grid_yh = [% height - 50 %]
 var x_count = 12
-var y_count = 18
+var y_count = 19
 var cell_yh = floor(grid_yh / (y_count + 1))
 var cell_xw = floor((grid_xw - cell_yh) / x_count)
 
@@ -109,7 +109,7 @@ var data_in_cell = function(gfx, x, y, xw, data, align)
 {
   xw = xw || 1
   if (align == undefined)
-    align = "left"
+    align = "center"
 
   var c = gfx.context
 
@@ -140,6 +140,9 @@ var data_in_cell = function(gfx, x, y, xw, data, align)
   }
 
   c.fillRect(x_pos, y_pos, cell_xw * xw - 1, cell_yh - 1)
+
+  if (data == undefined)
+    return
 
   var tmp_fill = c.fillStyle
   c.fillStyle = "#000"
@@ -296,10 +299,8 @@ view_layer.add_animation(new Animation({
 
     var act_notes = {}
 
-    [% y = 1 %]
+    [% y = 0 %]
 
-    data_in_cell(gfx,  0, [%y%], 1, "Name")
-    data_in_cell(gfx,  1, [%y%], 3, p.name, "center")
     data_in_cell(gfx,  4, [%y%], 2, "End Turn", "center")
     act_notes.end_turn = {x: 4, y:[%y%], xw: 2 }
 
@@ -314,102 +315,116 @@ view_layer.add_animation(new Animation({
 
     [% y = y + 1 %]
 
-    data_in_cell(gfx,  0, [%y%], 1, "Location")
-    data_in_cell(gfx,  1, [%y%], 1, "" + p.pos.x + ", " + p.pos.y, "right")
-
-    data_in_cell(gfx,  2, [%y%], 1, "Level")
-    data_in_cell(gfx,  3, [%y%], 1, p.level().toFixed(2), "right")
-
-    data_in_cell(gfx,  4, [%y%], 1, "XP")
-    data_in_cell(gfx,  5, [%y%], 1, p.xp.toFixed(2), "right")
+    data_in_cell(gfx, 0, [%y%], 1, "Name")
+    data_in_cell(gfx, 1, [%y%], 5, p.name, "center")
 
     [% y = y + 1 %]
 
-    data_in_cell(gfx,  0, [%y%], 1, "HP")
-    data_in_cell(gfx,  1, [%y%], 1, p.hp, "right")
-    data_in_cell(gfx,  2, [%y%], 1, p.hp_total)
+    [% first_line = y %]
 
-    data_in_cell(gfx,  3, [%y%], 1, "Ammo")
-    data_in_cell(gfx,  4, [%y%], 1, p.ammo, "right")
-    data_in_cell(gfx,  5, [%y%], 1, p.ammo_total)
-
-    [% y = y + 1 %]
-
-    data_in_cell(gfx,  0, [%y%], 1, "Speed")
-    data_in_cell(gfx,  1, [%y%], 1, p.speed, "right")
-
-    data_in_cell(gfx,  2, [%y%], 1, "Accuracy")
-    data_in_cell(gfx,  3, [%y%], 1, p.accuracy, "right")
-
-    data_in_cell(gfx,  4, [%y%], 1, "Evasion")
-    data_in_cell(gfx,  5, [%y%], 1, p.ev, "right")
-
-    [% y = y + 1 %]
-
-    data_in_cell(gfx,  0, [%y%], 1, "Weapon")
-    data_in_cell(gfx,  1, [%y%], 2, p.weapon == null ? "" : p.weapon.name, "center")
-    act_notes.weapon = {x: 1, y:[%y%], xw: 2 }
-
-    [% y = y + 1 %]
-
-    data_in_cell(gfx,  0, [%y%], 1, "")
-    data_in_cell(gfx,  1, [%y%], 1, "Accuracy")
-    data_in_cell(gfx,  3, [%y%], 2, "Rate of Fire")
-
-    if (p.weapon == null)
+    var show_person = function(p, x, y)
     {
-      data_in_cell(gfx,  2, [%y%], 1, "")
-      data_in_cell(gfx,  5, [%y%], 1, "")
-    } else {
-      data_in_cell(gfx,  2, [%y%], 1, p.weapon.accuracy, "right")
-      data_in_cell(gfx,  5, [%y%], 1, p.weapon.rof, "right")
+      [% y = 0 %]
+
+      var loc = p.pos != undefined ? "" + p.pos.x + ", " + p.pos.y : ""
+      data_in_cell(gfx, x + 0, y + [%y%], 1, "Location")
+      data_in_cell(gfx, x + 1, y + [%y%], 1, loc, "right")
+
+      data_in_cell(gfx, x + 2, y + [%y%], 1, "Level")
+      data_in_cell(gfx, x + 3, y + [%y%], 1, p.level(), "right")
+
+      data_in_cell(gfx, x + 4, y + [%y%], 1, "XP")
+      data_in_cell(gfx, x + 5, y + [%y%], 1, p.xp, "right")
+
+      [% y = y + 1 %]
+
+      data_in_cell(gfx, x + 0, y + [%y%], 1, "HP")
+      data_in_cell(gfx, x + 1, y + [%y%], 1, p.hp, "right")
+      data_in_cell(gfx, x + 2, y + [%y%], 1, p.hp_total, "left")
+
+      data_in_cell(gfx, x + 3, y + [%y%], 1, "Ammo")
+      data_in_cell(gfx, x + 4, y + [%y%], 1, p.ammo, "right")
+      data_in_cell(gfx, x + 5, y + [%y%], 1, p.ammo_total, "left")
+
+      [% y = y + 1 %]
+
+      data_in_cell(gfx, x + 0, y + [%y%], 1, "Speed")
+      data_in_cell(gfx, x + 1, y + [%y%], 1, p.speed, "right")
+
+      data_in_cell(gfx, x + 2, y + [%y%], 1, "Accuracy")
+      data_in_cell(gfx, x + 3, y + [%y%], 1, p.accuracy, "right")
+
+      data_in_cell(gfx, x + 4, y + [%y%], 1, "Evasion")
+      data_in_cell(gfx, x + 5, y + [%y%], 1, p.ev, "right")
+
+      [% y = y + 1 %]
+
+      data_in_cell(gfx, x + 0, y + [%y%], 2, "Weapon")
+      data_in_cell(gfx, x + 2, y + [%y%], 4, p.weapon.name, "center")
+      act_notes.weapon = {x: 2, y:y + [%y%], xw: 4 }
+
+      [% y = y + 1 %]
+
+      data_in_cell(gfx, x + 0, y + [%y%], 1, "")
+      data_in_cell(gfx, x + 1, y + [%y%], 1, "Accuracy")
+      data_in_cell(gfx, x + 2, y + [%y%], 1, p.weapon.accuracy, "right")
+
+      data_in_cell(gfx, x + 3, y + [%y%], 2, "Rate of Fire")
+      data_in_cell(gfx, x + 5, y + [%y%], 1, p.weapon.rof, "right")
+
+      [% y = y + 1 %]
+
+      data_in_cell(gfx, x + 0, y + [%y%], 1, "")
+      data_in_cell(gfx, x + 1, y + [%y%], 1, "Power")
+      data_in_cell(gfx, x + 2, y + [%y%], 1, p.weapon.power, "right")
+
+      data_in_cell(gfx, x + 3, y + [%y%], 2, "Ammo Use")
+      data_in_cell(gfx, x + 5, y + [%y%], 1, p.weapon.ammo, "right")
+
+      [% y = y + 1 %]
+
+      data_in_cell(gfx, x + 0, y + [%y%], 2, "Armor")
+      data_in_cell(gfx, x + 2, y + [%y%], 4, p.armor.name, "center")
+      act_notes.armor = {x: 2, y:y + [%y%], xw: 4 }
+
+      [% y = y + 1 %]
+
+      data_in_cell(gfx, x + 0, y + [%y%], 1, "")
+      data_in_cell(gfx, x + 1, y + [%y%], 1, "Integrity")
+      data_in_cell(gfx, x + 2, y + [%y%], 1, p.armor.integ, "right")
+      data_in_cell(gfx, x + 3, y + [%y%], 1, p.armor.integ_total, "left")
+
+      data_in_cell(gfx, x + 4, y + [%y%], 1, "Strength")
+      data_in_cell(gfx, x + 5, y + [%y%], 1, p.armor.str, "right")
+
+      [% y = y + 1 %]
     }
 
-    [% y = y + 1 %]
-
-    data_in_cell(gfx,  0, [%y%], 1, "")
-    data_in_cell(gfx,  1, [%y%], 1, "Power", "right")
-    data_in_cell(gfx,  3, [%y%], 2, "Ammo Use", "right")
-
-    if (p.weapon == null)
-    {
-      data_in_cell(gfx,  2, [%y%], 1, "")
-      data_in_cell(gfx,  5, [%y%], 1, "")
-    } else {
-      data_in_cell(gfx,  2, [%y%], 1, p.weapon.power, "right")
-      data_in_cell(gfx,  5, [%y%], 1, p.weapon.ammo, "right")
-    }
-
-    [% y = y + 1 %]
-
-    data_in_cell(gfx,  0, [%y%], 1, "Armor")
-    data_in_cell(gfx,  1, [%y%], 2, p.armor == null ? "" : p.armor.name, "center")
-    act_notes.armor = {x: 1, y:[%y%], xw: 2 }
-
-    [% y = y + 1 %]
-
-    data_in_cell(gfx,  0, [%y%], 1, "")
-    data_in_cell(gfx,  1, [%y%], 1, "Integrity")
-    data_in_cell(gfx,  4, [%y%], 1, "Strength")
-
-    if (p.weapon == null)
-    {
-      data_in_cell(gfx,  2, [%y%], 1, "")
-      data_in_cell(gfx,  3, [%y%], 1, "")
-      data_in_cell(gfx,  5, [%y%], 1, "")
-    } else {
-      data_in_cell(gfx,  2, [%y%], 1, p.armor.integ, "right")
-      data_in_cell(gfx,  3, [%y%], 1, p.armor.integ_total)
-      data_in_cell(gfx,  5, [%y%], 1, p.armor.str, "right")
-    }
-
-    [% y = y + 1 %]
+    show_person(p, 0, [% first_line %])
 
     var act_note = act_notes[fields[current_field]]
     if (act_note != undefined)
     {
       data_in_cell(gfx, act_note.x, act_note.y, act_note.xw, halo)
     }
+
+    c.fillStyle = "#ffc"
+    data_in_cell(gfx, 6, [% first_line - 1 %], 1, "Enemy")
+
+    [% y = y + 1 %]
+    var enemy = { weapon: {}, armor: {}, level: $.noop, };
+
+    if (p.enemy != undefined)
+    {
+      data_in_cell(gfx, 7, [% first_line - 1 %], 5, p.enemy.name, "center")
+      enemy = p.enemy
+    }
+    else
+    {
+      data_in_cell(gfx, 7, [% first_line - 1 %], 5, "None", "center")
+    }
+
+    show_person(enemy, 6, [% first_line %])
 
     return gfx
   },

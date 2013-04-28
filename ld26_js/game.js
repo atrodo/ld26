@@ -60,6 +60,8 @@ var fields = [
       armor: null,
       inventory: [],
       action: "Explore",
+
+      enemy: null,
     }, options);
 
     var self = this;
@@ -255,7 +257,8 @@ var fields = [
       var y_move = ceil(rng.random(y_max * 2) - y_max)
       self.pos.x += x_move
       self.pos.y += y_move
-      warn(x_move, y_move, floor(Math.sqrt(x_move * x_move + y_move * y_move)))
+
+      self.enemy = new Person({ name: "A Potato", pos: $.extend({}, self.pos)})
     }
   }
 
