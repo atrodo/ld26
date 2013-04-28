@@ -315,10 +315,10 @@ view_layer.add_animation(new Animation({
     data_in_cell(gfx,  1, [%y%], 1, "" + p.pos.x + ", " + p.pos.y, "right")
 
     data_in_cell(gfx,  2, [%y%], 1, "Level")
-    data_in_cell(gfx,  3, [%y%], 1, p.level(), "right")
+    data_in_cell(gfx,  3, [%y%], 1, p.level().toFixed(2), "right")
 
     data_in_cell(gfx,  4, [%y%], 1, "XP")
-    data_in_cell(gfx,  5, [%y%], 1, floor(p.xp * 100) / 100, "right")
+    data_in_cell(gfx,  5, [%y%], 1, p.xp.toFixed(2), "right")
 
     [% y = y + 1 %]
 
