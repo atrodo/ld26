@@ -14,6 +14,8 @@ var fields = [
 
 [% WRAPPER scope %]
 
+  var rng = new lprng(null);
+
   var Weapon = function(options)
   {
     $.extend(this, {
@@ -242,12 +244,41 @@ var fields = [
       self.set_action(cur_i - 1 % all.length)
     }
 
+    // Actions
+
+    self.Nothing = function() {}
+
+    self.Explore = function()
+    {
+      var x_move = ceil(rng.random(self.speed * 2) - self.speed)
+      var y_max  = floor(Math.sqrt(self.speed * self.speed - x_move * x_move))
+      var y_move = ceil(rng.random(y_max * 2) - y_max)
+      self.pos.x += x_move
+      self.pos.y += y_move
+      warn(x_move, y_move, floor(Math.sqrt(x_move * x_move + y_move * y_move)))
+    }
+  }
+
+  var end_turn = function()
+  {
+    $.each(squad, function(i, p)
+    {
+      if (p.hp <= 0)
+        return;
+
+      if ($.isFunction(p[p.action]))
+      {
+        p[p.action]()
+      }
+    })
+    current_turn++
   }
   
   restart_game = function()
   {
     info = {}
     squad = []
+    rng = new lprng(null);
 
     for (var i = 0; i < 8; i++)
     {
@@ -257,13 +288,12 @@ var fields = [
     }
   }
 
-  restart_game()
-
   var input = new Input({listen: true})
   input.register_action("prev_book",  "pageup")
   input.register_action("next_book",  "pagedown")
   input.register_action("prev_field",  "shift+tab")
   input.register_action("next_field",  "tab")
+  input.register_action("select",  "enter")
   input.add_action({
     prev_book: function()
     {
@@ -335,7 +365,25 @@ var fields = [
 
       return new Cooldown()
     },
+    select: function()
+    {
+      var field = fields[current_field]
+
+      if (field == undefined)
+        return new Cooldown()
+
+      switch (field)
+      {
+        case "end_turn":
+          end_turn()
+          break;
+      }
+
+      return new Cooldown()
+    },
   })
+
+  restart_game()
 
 
 [% END %]
