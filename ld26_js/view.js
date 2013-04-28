@@ -20,8 +20,8 @@ var draw_tab = function(gfx, x, text)
   c.lineTo(x, 2);
   c.lineTo(x + 2, 2);
   c.lineTo(x + 2, 1);
-  c.lineTo(xw, 1);
-  c.lineTo(xw + yh, yh);
+  c.lineTo(x + xw, 1);
+  c.lineTo(x + xw + yh, yh);
 
   c.strokeStyle = "#728ead";
   c.stroke();
@@ -29,7 +29,7 @@ var draw_tab = function(gfx, x, text)
 
   c.fillStyle = "#728ead";
   c.scale(1, -1)
-  c.fillText(text, x + [% x_pad %], -[% y_pad * 2 %])
+  c.fillText(text, x + [% x_pad * 2 %], -[% y_pad * 2 %])
   gfx.reset_transform()
 
   return xw
