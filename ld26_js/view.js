@@ -55,8 +55,38 @@ view_layer.add_animation(new Animation({
 
     c.font = (this.yh - [% y_pad * 2 %]) + "px Georgia"
 
+    var total = 10;
+    var tabs = ["Overview"]
+    var titles = $.map(squad, function(v)
+    {
+      return v.name
+    })
+    titles = $.merge(tabs, titles)
+
+    var positions = $.map(titles, function(v)
+    {
+      var result = total
+      total += 10 + c.measureText(v).width + [% x_pad * 2 %]
+      return result
+    })
+
+    titles.reverse()
+    positions.reverse()
+
+    var current_tab = 0
+    $.each(titles, function(i)
+    {
+      c.fillStyle = "#cdddef"
+      if (squad.length - i == current_person + 1)
+      {
+        current_tab = i
+        return
+      }
+      draw_tab(gfx, positions[i], titles[i])
+    })
+
     c.fillStyle = "#fff"
-    draw_tab(gfx, 10, "Overview")
+    draw_tab(gfx, positions[current_tab], titles[current_tab])
 
     return gfx
   },
