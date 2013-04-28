@@ -129,7 +129,7 @@ var data_in_cell = function(gfx, x, y, xw, data, align)
   c.fillStyle = "#000"
 
   c.textAlign = align
-  c.fillText(data, text_x, y_pos + cell_yh - [% y_pad * 2 %], text_max)
+  c.fillText(data, text_x, y_pos + cell_yh - [% y_pad * 3 %], text_max)
 
   c.fillStyle = tmp_fill
 }
