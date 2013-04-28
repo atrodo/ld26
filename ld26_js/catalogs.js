@@ -1,19 +1,5 @@
 var weapon_catalog = [
   new Weapon({
-    name: "Gravigun",
-    accuracy: 80,
-    rof: 2,
-    power: 10,
-    ammo: 2,
-  }),
-  new Weapon({
-    name: "Gravirifle",
-    accuracy: 75,
-    rof: 1,
-    power: 30,
-    ammo: 2,
-  }),
-  new Weapon({
     name: "Handgun",
     accuracy: 80,
     rof: 2,
@@ -33,6 +19,20 @@ var weapon_catalog = [
     rof: 1,
     power: 26,
     ammo: 1,
+  }),
+  new Weapon({
+    name: "Gravigun",
+    accuracy: 80,
+    rof: 2,
+    power: 10,
+    ammo: 2,
+  }),
+  new Weapon({
+    name: "Gravirifle",
+    accuracy: 75,
+    rof: 1,
+    power: 30,
+    ammo: 2,
   }),
   new Weapon({
     name: "Potato",
