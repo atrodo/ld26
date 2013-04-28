@@ -63,6 +63,47 @@ view_layer.add_animation(new Animation({
 }))
 
 [%# Grid %]
+var grid_xw = [% width %]
+var grid_yh = [% height - 50 %]
+var x_count = 12
+var y_count = 18
+var cell_yh = floor(grid_yh / (y_count + 1))
+var cell_xw = floor((grid_xw - cell_yh) / x_count)
+
+// Take care of the final (cut off) row and column
+x_count++; y_count++
+
+var data_in_cell = function(gfx, x, y, xw, data, align)
+{
+  xw = xw || 1
+  if (align == undefined)
+    align = "left"
+
+  var c = gfx.context
+
+  var x_pos = x * cell_xw + cell_yh
+  var y_pos = y * cell_yh + cell_yh
+
+  var text_x = x_pos + [% x_pad %]
+  var text_max = cell_xw * xw - [% x_pad * 2 %]
+
+  if (align == "center")
+    text_x = text_x + text_max / 2
+
+  if (align == "right")
+    text_x = text_x + text_max
+
+  c.fillRect(x_pos, y_pos, cell_xw * xw - 1, cell_yh - 1)
+
+  var tmp_fill = c.fillStyle
+  c.fillStyle = "#000"
+
+  c.textAlign = align
+  c.fillText(data, text_x, y_pos + cell_yh - [% y_pad * 2 %], text_max)
+
+  c.fillStyle = tmp_fill
+}
+
 view_layer.add_animation(new Animation({
   frame_x: 0,
   frame_y: 20,
@@ -77,15 +118,9 @@ view_layer.add_animation(new Animation({
     var c = gfx.context
     c.translate(0, this.yh)
     c.scale(1, -1)
-    var x_count = 12
-    var y_count = 18
+    c.lineWidth = 1
+
     var cell_headers = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
-    var cell_yh = floor(this.yh / (y_count + 1))
-    var cell_xw = floor((this.xw - cell_yh) / x_count)
-
-    // Take care of the final (cut off) row and column
-    x_count++; y_count++
 
     c.font = (cell_yh - [% y_pad * 2 %]) + "px Georgia"
     c.textAlign = "center"
@@ -107,7 +142,7 @@ view_layer.add_animation(new Animation({
       c.fillRect  (0, y * cell_yh + cell_yh, cell_yh, cell_yh)
       c.strokeRect(0, y * cell_yh + cell_yh, cell_yh, cell_yh)
     }
-    
+
     c.fillStyle   = "#1e395b"
     for (var x = 0; x < x_count; x++)
     {
@@ -189,4 +224,129 @@ view_layer.add_animation(new Animation({
     return gfx;
   },
 }))
+
+[%# Data %]
+view_layer.add_animation(new Animation({
+  frame_x: 0,
+  frame_y: 20,
+  xw: grid_xw,
+  yh: grid_yh,
+  get_gfx: function()
+  {
+    var gfx = this.gfx
+
+    gfx.reset()
+
+    var c = gfx.context
+    c.translate(0, this.yh)
+    c.scale(1, -1)
+    c.font = "16px Georgia"
+
+    var p = squad[current_person]
+    c.fillStyle = "#cfc"
+
+    if (p == undefined)
+      return gfx;
+
+    [% y = 2 %]
+
+    data_in_cell(gfx,  0, [%y%], 1, "Name")
+    data_in_cell(gfx,  1, [%y%], 3, p.name, "center")
+    data_in_cell(gfx,  4, [%y%], 2, "End Turn", "center")
+
+    [% y = y + 1 %]
+
+    data_in_cell(gfx,  0, [%y%], 1, "Location")
+    data_in_cell(gfx,  1, [%y%], 1, "" + p.pos.x + ", " + p.pos.y, "right")
+
+    data_in_cell(gfx,  2, [%y%], 1, "Level")
+    data_in_cell(gfx,  3, [%y%], 1, p.level(), "right")
+
+    data_in_cell(gfx,  4, [%y%], 1, "XP")
+    data_in_cell(gfx,  5, [%y%], 1, floor(p.xp * 100) / 100, "right")
+
+    [% y = y + 1 %]
+
+    data_in_cell(gfx,  0, [%y%], 1, "HP")
+    data_in_cell(gfx,  1, [%y%], 1, p.hp, "right")
+    data_in_cell(gfx,  2, [%y%], 1, p.hp_total)
+
+    data_in_cell(gfx,  3, [%y%], 1, "Ammo")
+    data_in_cell(gfx,  4, [%y%], 1, p.ammo, "right")
+    data_in_cell(gfx,  5, [%y%], 1, p.ammo_total)
+
+    [% y = y + 1 %]
+
+    data_in_cell(gfx,  0, [%y%], 1, "Speed")
+    data_in_cell(gfx,  1, [%y%], 1, p.speed)
+
+    data_in_cell(gfx,  2, [%y%], 1, "Accuracy")
+    data_in_cell(gfx,  3, [%y%], 1, p.accuracy)
+
+    data_in_cell(gfx,  4, [%y%], 1, "Evasion")
+    data_in_cell(gfx,  5, [%y%], 1, p.ev)
+
+    [% y = y + 1 %]
+
+    data_in_cell(gfx,  0, [%y%], 1, "Weapon")
+    data_in_cell(gfx,  1, [%y%], 2, p.weapon == null ? "" : p.weapon.name)
+
+    [% y = y + 1 %]
+
+    data_in_cell(gfx,  0, [%y%], 1, "")
+    data_in_cell(gfx,  1, [%y%], 1, "Accuracy")
+    data_in_cell(gfx,  3, [%y%], 2, "Rate of Fire")
+
+    if (p.weapon == null)
+    {
+      data_in_cell(gfx,  2, [%y%], 1, "")
+      data_in_cell(gfx,  5, [%y%], 1, "")
+    } else {
+      data_in_cell(gfx,  2, [%y%], 1, p.weapon.accuracy)
+      data_in_cell(gfx,  5, [%y%], 1, p.weapon.rof)
+    }
+
+    [% y = y + 1 %]
+
+    data_in_cell(gfx,  0, [%y%], 1, "")
+    data_in_cell(gfx,  1, [%y%], 1, "Power")
+    data_in_cell(gfx,  3, [%y%], 2, "Ammo Use")
+
+    if (p.weapon == null)
+    {
+      data_in_cell(gfx,  2, [%y%], 1, "")
+      data_in_cell(gfx,  5, [%y%], 1, "")
+    } else {
+      data_in_cell(gfx,  2, [%y%], 1, p.weapon.power)
+      data_in_cell(gfx,  5, [%y%], 1, p.weapon.ammo)
+    }
+
+    [% y = y + 1 %]
+
+    data_in_cell(gfx,  0, [%y%], 1, "Armor")
+    data_in_cell(gfx,  1, [%y%], 2, p.armor == null ? "" : p.armor.name)
+
+    [% y = y + 1 %]
+
+    data_in_cell(gfx,  0, [%y%], 1, "")
+    data_in_cell(gfx,  1, [%y%], 1, "Integrity")
+    data_in_cell(gfx,  4, [%y%], 1, "Strength")
+
+    if (p.weapon == null)
+    {
+      data_in_cell(gfx,  2, [%y%], 1, "")
+      data_in_cell(gfx,  3, [%y%], 1, "")
+      data_in_cell(gfx,  5, [%y%], 1, "")
+    } else {
+      data_in_cell(gfx,  2, [%y%], 1, p.armor.integ)
+      data_in_cell(gfx,  3, [%y%], 1, p.armor.integ_total)
+      data_in_cell(gfx,  5, [%y%], 1, p.armor.str)
+    }
+
+    [% y = y + 1 %]
+
+    return gfx
+  },
+}))
+
 [% END %]
