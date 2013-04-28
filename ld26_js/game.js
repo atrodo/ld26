@@ -57,7 +57,7 @@ var fields = [
       weapon: null,
       armor: null,
       inventory: [],
-      action: "Nothing",
+      action: "Explore",
     }, options);
 
     var self = this;
