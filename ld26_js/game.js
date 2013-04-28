@@ -47,17 +47,21 @@ var restart_game = $.noop
   restart_game()
 
   var input = new Input({listen: true})
-  input.register_action("prev_book",  "pageup")
-  input.register_action("next_book",  "pagedown")
+  input.register_action("prev_book",  "pagedown")
+  input.register_action("next_book",  "pageup")
   input.add_action({
     prev_book: function()
     {
-      current_person = max(current_person-1, -1)
+      current_person--
+      if (current_person < -1)
+        current_person = squad.length-1
       return new Cooldown()
     },
     next_book: function()
     {
-      current_person = min(current_person+1, squad.length-1)
+      current_person++
+      if (current_person > squad.length-1)
+        current_person = -1
       return new Cooldown()
     },
   })
