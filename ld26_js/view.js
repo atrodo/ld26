@@ -333,18 +333,18 @@ view_layer.add_animation(new Animation({
     [% y = y + 1 %]
 
     data_in_cell(gfx,  0, [%y%], 1, "Speed")
-    data_in_cell(gfx,  1, [%y%], 1, p.speed)
+    data_in_cell(gfx,  1, [%y%], 1, p.speed, "right")
 
     data_in_cell(gfx,  2, [%y%], 1, "Accuracy")
-    data_in_cell(gfx,  3, [%y%], 1, p.accuracy)
+    data_in_cell(gfx,  3, [%y%], 1, p.accuracy, "right")
 
     data_in_cell(gfx,  4, [%y%], 1, "Evasion")
-    data_in_cell(gfx,  5, [%y%], 1, p.ev)
+    data_in_cell(gfx,  5, [%y%], 1, p.ev, "right")
 
     [% y = y + 1 %]
 
     data_in_cell(gfx,  0, [%y%], 1, "Weapon")
-    data_in_cell(gfx,  1, [%y%], 2, p.weapon == null ? "" : p.weapon.name)
+    data_in_cell(gfx,  1, [%y%], 2, p.weapon == null ? "" : p.weapon.name, "center")
     act_notes.weapon = {x: 1, y:[%y%], xw: 2 }
 
     [% y = y + 1 %]
@@ -358,29 +358,29 @@ view_layer.add_animation(new Animation({
       data_in_cell(gfx,  2, [%y%], 1, "")
       data_in_cell(gfx,  5, [%y%], 1, "")
     } else {
-      data_in_cell(gfx,  2, [%y%], 1, p.weapon.accuracy)
-      data_in_cell(gfx,  5, [%y%], 1, p.weapon.rof)
+      data_in_cell(gfx,  2, [%y%], 1, p.weapon.accuracy, "right")
+      data_in_cell(gfx,  5, [%y%], 1, p.weapon.rof, "right")
     }
 
     [% y = y + 1 %]
 
     data_in_cell(gfx,  0, [%y%], 1, "")
-    data_in_cell(gfx,  1, [%y%], 1, "Power")
-    data_in_cell(gfx,  3, [%y%], 2, "Ammo Use")
+    data_in_cell(gfx,  1, [%y%], 1, "Power", "right")
+    data_in_cell(gfx,  3, [%y%], 2, "Ammo Use", "right")
 
     if (p.weapon == null)
     {
       data_in_cell(gfx,  2, [%y%], 1, "")
       data_in_cell(gfx,  5, [%y%], 1, "")
     } else {
-      data_in_cell(gfx,  2, [%y%], 1, p.weapon.power)
-      data_in_cell(gfx,  5, [%y%], 1, p.weapon.ammo)
+      data_in_cell(gfx,  2, [%y%], 1, p.weapon.power, "right")
+      data_in_cell(gfx,  5, [%y%], 1, p.weapon.ammo, "right")
     }
 
     [% y = y + 1 %]
 
     data_in_cell(gfx,  0, [%y%], 1, "Armor")
-    data_in_cell(gfx,  1, [%y%], 2, p.armor == null ? "" : p.armor.name)
+    data_in_cell(gfx,  1, [%y%], 2, p.armor == null ? "" : p.armor.name, "center")
     act_notes.armor = {x: 1, y:[%y%], xw: 2 }
 
     [% y = y + 1 %]
@@ -395,9 +395,9 @@ view_layer.add_animation(new Animation({
       data_in_cell(gfx,  3, [%y%], 1, "")
       data_in_cell(gfx,  5, [%y%], 1, "")
     } else {
-      data_in_cell(gfx,  2, [%y%], 1, p.armor.integ)
+      data_in_cell(gfx,  2, [%y%], 1, p.armor.integ, "right")
       data_in_cell(gfx,  3, [%y%], 1, p.armor.integ_total)
-      data_in_cell(gfx,  5, [%y%], 1, p.armor.str)
+      data_in_cell(gfx,  5, [%y%], 1, p.armor.str, "right")
     }
 
     [% y = y + 1 %]
