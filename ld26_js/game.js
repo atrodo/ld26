@@ -73,8 +73,29 @@ var fields = [
     if (self.armor == null)
       self.armor = no_armor
 
+    // Add the None items
     self.inventory.push(no_weapon)
     self.inventory.push(no_armor)
+
+    // Add default items
+    $.each(weapon_catalog, function(i, weapon)
+    {
+      self.inventory.push(new Weapon(weapon))
+    })
+    $.each(armor_catalog, function(i, armor)
+    {
+      self.inventory.push(new Armor(armor))
+    })
+
+    self.all_weapon = function()
+    {
+      return $.grep(self.inventory, function(item)
+      {
+        if (item instanceof Weapon)
+          return true;
+        return false;
+      })
+    }
 
     self.all_armor = function()
     {
@@ -86,7 +107,91 @@ var fields = [
       })
     }
 
-    warn(self.all_armor())
+    self.all_inventory = function()
+    {
+      return $.merge([], self.inventory)
+    }
+
+    self.set_armor = function (i)
+    {
+      var all = self.all_armor()
+      var armor = all[i]
+      if (armor == undefined)
+        armor = no_armor
+      self.armor = armor
+      return armor
+    }
+
+    self.next_armor = function()
+    {
+      var all = self.all_armor()
+      var cur_i = -1
+      $.each(all, function(i, armor)
+      {
+        if (armor == self.armor)
+        {
+          cur_i = i;
+          return false;
+        }
+      })
+      self.set_armor(cur_i + 1 % all.length)
+    }
+
+    self.prev_armor = function()
+    {
+      var all = self.all_armor()
+      var cur_i = -1
+      $.each(all, function(i, armor)
+      {
+        if (armor == self.armor)
+        {
+          cur_i = i;
+          return false;
+        }
+      })
+      self.set_armor(cur_i - 1 % all.length)
+    }
+
+    self.set_weapon = function (i)
+    {
+      var all = self.all_weapon()
+      var weapon = all[i]
+      if (weapon == undefined)
+        weapon = no_weapon
+      self.weapon = weapon
+      return weapon
+    }
+
+    self.next_weapon = function()
+    {
+      var all = self.all_weapon()
+      var cur_i = -1
+      $.each(all, function(i, weapon)
+      {
+        if (weapon == self.weapon)
+        {
+          cur_i = i;
+          return false;
+        }
+      })
+      self.set_weapon(cur_i + 1 % all.length)
+    }
+
+    self.prev_weapon = function()
+    {
+      var all = self.all_weapon()
+      var cur_i = -1
+      $.each(all, function(i, weapon)
+      {
+        if (weapon == self.weapon)
+        {
+          cur_i = i;
+          return false;
+        }
+      })
+      self.set_weapon(cur_i - 1 % all.length)
+    }
+
   }
   
   restart_game = function()
@@ -105,8 +210,8 @@ var fields = [
   restart_game()
 
   var input = new Input({listen: true})
-  input.register_action("prev_book",  "pagedown")
-  input.register_action("next_book",  "pageup")
+  input.register_action("prev_book",  "pageup")
+  input.register_action("next_book",  "pagedown")
   input.register_action("prev_field",  "shift+tab")
   input.register_action("next_field",  "tab")
   input.add_action({
@@ -132,6 +237,46 @@ var fields = [
     next_field: function()
     {
       current_field = (current_field + 1) % fields.length
+      return new Cooldown()
+    },
+    down: function()
+    {
+      var p = squad[current_person]
+      var field = fields[current_field]
+
+      if (p == undefined || field == undefined)
+        return new Cooldown()
+
+      switch (field)
+      {
+        case "weapon":
+          p.next_weapon()
+          break;
+        case "armor":
+          p.next_armor()
+          break;
+      }
+
+      return new Cooldown()
+    },
+    up: function()
+    {
+      var p = squad[current_person]
+      var field = fields[current_field]
+
+      if (p == undefined || field == undefined)
+        return new Cooldown()
+
+      switch (field)
+      {
+        case "weapon":
+          p.prev_weapon()
+          break;
+        case "armor":
+          p.prev_armor()
+          break;
+      }
+
       return new Cooldown()
     },
   })
