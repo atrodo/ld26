@@ -13,6 +13,31 @@ var fields = [
 
 [% WRAPPER scope %]
 
+  var Weapon = function(options)
+  {
+    $.extend(this, {
+      name: "",
+      accuracy: 50,
+      rof: 1,
+      power: 1,
+      ammo: 1,
+    }, options);
+
+    var self = this;
+  }
+
+  var Armor = function(options)
+  {
+    $.extend(this, {
+      name: "",
+      integ: 0,
+      integ_total: 0,
+      str: 1,
+    }, options);
+
+    var self = this;
+  }
+
   var Person = function(options)
   {
     $.extend(this, {
@@ -28,6 +53,7 @@ var fields = [
       ev: 7,
       weapon: null,
       armor: null,
+      inventory: [],
     }, options);
 
     var self = this;
@@ -36,8 +62,31 @@ var fields = [
     {
       return self.xp / 100
     }
-  }
 
+    var no_weapon = new Weapon({name: "None"})
+    var no_armor  = new Armor({name: "None"})
+
+    if (self.weapon == null)
+      self.weapon = no_weapon
+    if (self.armor == null)
+      self.armor = no_armor
+
+    self.inventory.push(no_weapon)
+    self.inventory.push(no_armor)
+
+    self.all_armor = function()
+    {
+      return $.grep(self.inventory, function(item)
+      {
+        if (item instanceof Armor)
+          return true;
+        return false;
+      })
+    }
+
+    warn(self.all_armor())
+  }
+  
   restart_game = function()
   {
     info = {}
