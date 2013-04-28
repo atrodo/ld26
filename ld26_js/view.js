@@ -103,6 +103,8 @@ var cell_xw = floor((grid_xw - cell_yh) / x_count)
 // Take care of the final (cut off) row and column
 x_count++; y_count++
 
+var halo = {}
+
 var data_in_cell = function(gfx, x, y, xw, data, align)
 {
   xw = xw || 1
@@ -122,6 +124,20 @@ var data_in_cell = function(gfx, x, y, xw, data, align)
 
   if (align == "right")
     text_x = text_x + text_max
+
+  if (data == halo)
+  {
+    c.strokeStyle = "#398fef"
+    c.strokeRect(x_pos + 0, y_pos + 0, cell_xw * xw - 1, cell_yh - 1)
+    c.strokeStyle = "#73adef"
+    c.globalAlpha = 0.6
+    c.strokeRect(x_pos + 1, y_pos + 1, cell_xw * xw - 3, cell_yh - 3)
+    c.strokeStyle = "#a8c9ef"
+    c.globalAlpha = 0.4
+    c.strokeRect(x_pos + 2, y_pos + 2, cell_xw * xw - 5, cell_yh - 5)
+    c.globalAlpha = 1
+    return
+  }
 
   c.fillRect(x_pos, y_pos, cell_xw * xw - 1, cell_yh - 1)
 
