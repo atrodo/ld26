@@ -38,6 +38,8 @@ var fields = [
     var self = this;
   }
 
+  [% INCLUDE "$game_js/catalogs.js" %]
+
   var Person = function(options)
   {
     $.extend(this, {
