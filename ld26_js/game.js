@@ -120,10 +120,15 @@ var fields = [
 
     self.all_action = function()
     {
-      return [
+      var results = [
         "Nothing",
         "Explore",
       ]
+      if (self.enemy != undefined)
+      {
+        results.push("Attack")
+      }
+      return results
     }
 
     self.set_armor = function (i)
@@ -258,7 +263,53 @@ var fields = [
       self.pos.x += x_move
       self.pos.y += y_move
 
-      self.enemy = new Person({ name: "A Potato", pos: $.extend({}, self.pos)})
+      self.enemy = new Person({
+        name: "A Potato",
+        pos: $.extend({}, self.pos),
+        enemy: self,
+      })
+    }
+
+    self.Attack = function()
+    {
+      if (self.enemy == undefined)
+        return
+
+      var e = self.enemy
+
+      for (var i = 0; i < self.weapon.rof; i++)
+      {
+        if (self.ammo < self.weapon.ammo)
+          break
+
+        // 75 self accuracy gives you the weapon's accuracy
+        var accuracy = (self.accuracy / 75) * self.weapon.accuracy
+        if (rng.random(100 + e.ev) < accuracy)
+        {
+          var dmg = self.weapon.power
+
+          if (e.armor.integ > 0)
+          {
+            dmg = dmg - floor(rng.random(e.armor.str))
+          }
+
+          // If the armor took the entire dmg, it's integrety goes down
+          if (dmg < 0)
+          {
+            e.armor.integ--
+            dmg = 0
+          }
+
+          e.hp -= dmg
+
+          if (e.hp < 0)
+          {
+            e.enemy = null
+            self.enemy = null
+            self.xp += 10
+          }
+        }
+      }
     }
   }
 
@@ -273,6 +324,15 @@ var fields = [
       {
         p[p.action]()
       }
+
+      if (p.enemy != undefined && $.isFunction(p.enemy.Attack))
+      {
+        p.enemy.Attack()
+      }
+
+      // Reset the action
+      p.prev_action()
+      p.next_action()
     })
     current_turn++
   }
