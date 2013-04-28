@@ -2,6 +2,7 @@ var info = {}
 var squad = []
 var current_person = 0;
 var current_field = 0;
+var current_turn = 1;
 
 var restart_game = $.noop
 var fields = [

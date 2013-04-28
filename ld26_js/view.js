@@ -305,6 +305,9 @@ view_layer.add_animation(new Animation({
 
     [% y = y + 1 %]
 
+    data_in_cell(gfx,  0, [%y%], 2, "Current Turn", "center")
+    data_in_cell(gfx,  2, [%y%], 1, current_turn.toFixed(2), "center")
+
     data_in_cell(gfx,  3, [%y%], 1, "Action", "center")
     data_in_cell(gfx,  4, [%y%], 2, p.action, "center")
     act_notes.action = {x: 4, y:[%y%], xw: 2 }
