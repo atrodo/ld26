@@ -31,11 +31,11 @@ var fields = [
     $.extend(this, {
       name: "",
       integ: 0,
-      integ_total: 0,
       str: 1,
     }, options);
 
     var self = this;
+    self.integ_total = self.integ
   }
 
   [% INCLUDE "$game_js/catalogs.js" %]
