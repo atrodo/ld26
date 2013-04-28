@@ -1,8 +1,15 @@
 var info = {}
 var squad = []
 var current_person = 0;
+var current_field = 0;
 
 var restart_game = $.noop
+var fields = [
+  "action",
+  "weapon",
+  "armor",
+  "end_turn"
+];
 
 [% WRAPPER scope %]
 
@@ -49,6 +56,8 @@ var restart_game = $.noop
   var input = new Input({listen: true})
   input.register_action("prev_book",  "pagedown")
   input.register_action("next_book",  "pageup")
+  input.register_action("prev_field",  "shift+tab")
+  input.register_action("next_field",  "tab")
   input.add_action({
     prev_book: function()
     {
@@ -62,6 +71,16 @@ var restart_game = $.noop
       current_person++
       if (current_person > squad.length-1)
         current_person = -1
+      return new Cooldown()
+    },
+    prev_field: function()
+    {
+      current_field = (current_field - 1) % fields.length
+      return new Cooldown()
+    },
+    next_field: function()
+    {
+      current_field = (current_field + 1) % fields.length
       return new Cooldown()
     },
   })

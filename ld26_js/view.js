@@ -294,11 +294,20 @@ view_layer.add_animation(new Animation({
     if (p == undefined)
       return gfx;
 
-    [% y = 2 %]
+    var act_notes = {}
+
+    [% y = 1 %]
 
     data_in_cell(gfx,  0, [%y%], 1, "Name")
     data_in_cell(gfx,  1, [%y%], 3, p.name, "center")
     data_in_cell(gfx,  4, [%y%], 2, "End Turn", "center")
+    act_notes.end_turn = {x: 4, y:[%y%], xw: 2 }
+
+    [% y = y + 1 %]
+
+    data_in_cell(gfx,  3, [%y%], 1, "Action", "center")
+    data_in_cell(gfx,  4, [%y%], 2, "", "center")
+    act_notes.action = {x: 4, y:[%y%], xw: 2 }
 
     [% y = y + 1 %]
 
@@ -336,6 +345,7 @@ view_layer.add_animation(new Animation({
 
     data_in_cell(gfx,  0, [%y%], 1, "Weapon")
     data_in_cell(gfx,  1, [%y%], 2, p.weapon == null ? "" : p.weapon.name)
+    act_notes.weapon = {x: 1, y:[%y%], xw: 2 }
 
     [% y = y + 1 %]
 
@@ -371,6 +381,7 @@ view_layer.add_animation(new Animation({
 
     data_in_cell(gfx,  0, [%y%], 1, "Armor")
     data_in_cell(gfx,  1, [%y%], 2, p.armor == null ? "" : p.armor.name)
+    act_notes.armor = {x: 1, y:[%y%], xw: 2 }
 
     [% y = y + 1 %]
 
@@ -390,6 +401,12 @@ view_layer.add_animation(new Animation({
     }
 
     [% y = y + 1 %]
+
+    var act_note = act_notes[fields[current_field]]
+    if (act_note != undefined)
+    {
+      data_in_cell(gfx, act_note.x, act_note.y, act_note.xw, halo)
+    }
 
     return gfx
   },
