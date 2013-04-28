@@ -372,10 +372,13 @@ var fields = [
       if (field == undefined)
         return new Cooldown()
 
+      current_field = (current_field + 1) % fields.length
+
       switch (field)
       {
         case "end_turn":
           end_turn()
+          current_field = 0
           break;
       }
 
