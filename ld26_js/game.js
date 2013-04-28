@@ -56,6 +56,7 @@ var fields = [
       weapon: null,
       armor: null,
       inventory: [],
+      action: "Nothing",
     }, options);
 
     var self = this;
@@ -110,6 +111,14 @@ var fields = [
     self.all_inventory = function()
     {
       return $.merge([], self.inventory)
+    }
+
+    self.all_action = function()
+    {
+      return [
+        "Nothing",
+        "Explore",
+      ]
     }
 
     self.set_armor = function (i)
@@ -192,6 +201,46 @@ var fields = [
       self.set_weapon(cur_i - 1 % all.length)
     }
 
+    self.set_action = function (i)
+    {
+      var all = self.all_action()
+      var action = all[i]
+      if (action == undefined)
+        action = "Nothing"
+      self.action = action
+      return action
+    }
+
+    self.next_action = function()
+    {
+      var all = self.all_action()
+      var cur_i = -1
+      $.each(all, function(i, action)
+      {
+        if (action == self.action)
+        {
+          cur_i = i;
+          return false;
+        }
+      })
+      self.set_action(cur_i + 1 % all.length)
+    }
+
+    self.prev_action = function()
+    {
+      var all = self.all_action()
+      var cur_i = -1
+      $.each(all, function(i, action)
+      {
+        if (action == self.action)
+        {
+          cur_i = i;
+          return false;
+        }
+      })
+      self.set_action(cur_i - 1 % all.length)
+    }
+
   }
   
   restart_game = function()
@@ -255,6 +304,9 @@ var fields = [
         case "armor":
           p.next_armor()
           break;
+        case "action":
+          p.next_action()
+          break;
       }
 
       return new Cooldown()
@@ -274,6 +326,9 @@ var fields = [
           break;
         case "armor":
           p.prev_armor()
+          break;
+        case "action":
+          p.prev_action()
           break;
       }
 
