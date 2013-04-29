@@ -168,6 +168,9 @@ var fields = [
           return false;
         }
       })
+      if (cur_i <= 0)
+        cur_i = all.length
+
       self.set_armor(cur_i - 1 % all.length)
     }
 
@@ -208,6 +211,9 @@ var fields = [
           return false;
         }
       })
+      if (cur_i <= 0)
+        cur_i = all.length
+
       self.set_weapon(cur_i - 1 % all.length)
     }
 
@@ -248,6 +254,9 @@ var fields = [
           return false;
         }
       })
+      if (cur_i <= 0)
+        cur_i = all.length
+
       self.set_action(cur_i - 1 % all.length)
     }
 
