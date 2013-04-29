@@ -292,7 +292,6 @@ view_layer.add_animation(new Animation({
     c.font = "16px Georgia"
 
     var p = squad[current_person]
-    c.fillStyle = "#cfc"
 
     if (p == undefined)
       return gfx;
@@ -301,17 +300,29 @@ view_layer.add_animation(new Animation({
 
     [% y = 0 %]
 
-    data_in_cell(gfx,  4, [%y%], 2, "End Turn", "center")
-    act_notes.end_turn = {x: 4, y:[%y%], xw: 2 }
+    c.fillStyle = "#ccf"
 
-    [% y = y + 1 %]
+    data_in_cell(gfx,  10, [%y%], 2, "End Turn", "center")
+    act_notes.end_turn = {x: 10, y:[%y%], xw: 2 }
 
-    data_in_cell(gfx,  0, [%y%], 2, "Current Turn", "center")
-    data_in_cell(gfx,  2, [%y%], 1, current_turn.toFixed(2), "center")
+    data_in_cell(gfx,  3, [%y%], 2, "Current Turn", "center")
+    data_in_cell(gfx,  5, [%y%], 2, current_turn.toFixed(2), "center")
 
-    data_in_cell(gfx,  3, [%y%], 1, "Action", "center")
-    data_in_cell(gfx,  4, [%y%], 2, p.action, "center")
-    act_notes.action = {x: 4, y:[%y%], xw: 2 }
+    data_in_cell(gfx,  7, [%y%], 1, "Exit", "center")
+    if (exit == undefined)
+    {
+      data_in_cell(gfx,  8, [%y%], 2, "None", "center")
+    }
+    else
+    {
+      data_in_cell(gfx,  8, [%y%], 2, exit.x + ", " + exit.y, "center")
+    }
+
+    c.fillStyle = "#cfc"
+
+    data_in_cell(gfx,  0, [%y%], 1, "Action", "center")
+    data_in_cell(gfx,  1, [%y%], 2, p.action, "center")
+    act_notes.action = {x: 1, y:[%y%], xw: 2 }
 
     [% y = y + 1 %]
 

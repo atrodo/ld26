@@ -12,6 +12,8 @@ var fields = [
   "end_turn"
 ];
 
+var exit = null
+
 [% WRAPPER scope %]
 
   var rng = new lprng(null);
@@ -122,11 +124,28 @@ var fields = [
     {
       var results = [
         "Nothing",
-        "Explore",
       ]
       if (self.enemy != undefined)
       {
+        results.push("Retreat")
         results.push("Attack")
+      }
+      else
+      {
+        results.push("Explore")
+      }
+
+      if (exit != undefined)
+      {
+        if (self.pos.x == exit.x && self.pos.y == exit.y)
+        {
+          results.push("Exit")
+        }
+        else
+        {
+          if (self.enemy == undefined)
+            results.push("Head to Exit")
+        }
       }
       return results
     }
@@ -272,11 +291,32 @@ var fields = [
       self.pos.x += x_move
       self.pos.y += y_move
 
-      self.enemy = new Person({
-        name: "A Potato",
-        pos: $.extend({}, self.pos),
-        enemy: self,
-      })
+      // Generate an exit?
+      if (exit == undefined && rng.random(100) < 100)
+      {
+        exit = $.extend({}, self.pos)
+      }
+
+      if (rng.random(100) < 10)
+      {
+        self.enemy = new Person({
+          name: "A Potato",
+          pos: $.extend({}, self.pos),
+          enemy: self,
+        })
+      }
+    }
+
+    self.Retreat = function(no_explore)
+    {
+      var e = self.enemy
+
+      if (rng.random(e.ev + self.ev) < self.ev)
+      {
+        self.enemy = null
+        if (!no_explore)
+          self.Explore()
+      }
     }
 
     self.Attack = function()
@@ -320,10 +360,37 @@ var fields = [
         }
       }
     }
+
+    self["Head to Exit"] = function()
+    {
+      if (self.enemy != undefined)
+        self.Retreat(true)
+
+      if (self.enemy != undefined)
+        return
+
+      var x_move = exit.x - self.pos.x
+      var y_move = exit.y - self.pos.y
+      var length = Math.sqrt((x_move * x_move) + (y_move * y_move))
+      if (length > self.speed)
+      {
+        var ratio  = self.speed / length
+
+        x_move = floor(x_move * ratio)
+        y_move = floor(y_move * ratio)
+      }
+
+      warn(x_move, y_move, Math.sqrt(x_move * x_move + y_move * y_move))
+      self.pos.x += x_move
+      self.pos.y += y_move
+
+    }
   }
 
   var end_turn = function()
   {
+    var on_exit = false;
+
     $.each(squad, function(i, p)
     {
       if (p.hp <= 0)
@@ -342,7 +409,17 @@ var fields = [
       // Reset the action
       p.prev_action()
       p.next_action()
+
+      if (exit != undefined)
+      {
+        if (exit.x == p.pos.x && exit.y == p.pos.y)
+          on_exit = true;
+      }
     })
+
+    if (on_exit == false)
+      exit = null
+
     current_turn++
   }
   
@@ -352,7 +429,7 @@ var fields = [
     squad = []
     rng = new lprng(null);
 
-    for (var i = 0; i < 8; i++)
+    for (var i = 0; i < 4; i++)
     {
       squad.push(new Person({
         name: i,
