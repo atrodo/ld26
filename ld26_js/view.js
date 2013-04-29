@@ -318,13 +318,15 @@ view_layer.add_animation(new Animation({
       data_in_cell(gfx,  8, [%y%], 2, exit.x + ", " + exit.y, "center")
     }
 
-    c.fillStyle = "#cfc"
+    c.fillStyle = "#fcf"
 
     data_in_cell(gfx,  0, [%y%], 1, "Action", "center")
     data_in_cell(gfx,  1, [%y%], 2, p.action, "center")
     act_notes.action = {x: 1, y:[%y%], xw: 2 }
 
     [% y = y + 1 %]
+
+    c.fillStyle = "#cfc"
 
     data_in_cell(gfx, 0, [%y%], 1, "Name")
     data_in_cell(gfx, 1, [%y%], 5, p.name, "center")
