@@ -52,9 +52,7 @@ var exit = null
       pos: {x: 0, y: 0},
       xp: 0,
       hp: 10,
-      hp_total: 10,
-      ammo: 1,
-      ammo_total: 1,
+      ammo: 4,
       speed: 5,
       accuracy: 70,
       ev: 7,
@@ -67,6 +65,9 @@ var exit = null
     }, options);
 
     var self = this;
+
+    self.hp_total = self.hp
+    self.ammo_total = self.ammo
 
     self.level = function()
     {
@@ -292,18 +293,55 @@ var exit = null
       self.pos.y += y_move
 
       // Generate an exit?
-      if (exit == undefined && rng.random(100) < 100)
+      if (exit == undefined && rng.random(100) < 5)
       {
         exit = $.extend({}, self.pos)
       }
 
-      if (rng.random(100) < 10)
+      if (rng.random(100) < 40)
       {
-        self.enemy = new Person({
-          name: "A Potato",
-          pos: $.extend({}, self.pos),
-          enemy: self,
-        })
+        self.enemy = new Person(rng.choose(
+          [
+            {
+              name: "A rat",
+              pos: $.extend({}, self.pos),
+              speed: 10,
+              ev: 10,
+              weapon: { name: "Whiskers", accuracy: 40, rof: 1, power: 2, ammo: 1},
+              enemy: self,
+            },
+            {
+              name: "A Quokka",
+              pos: $.extend({}, self.pos),
+              ev: 12,
+              accuracy: 75,
+              weapon: { name: "Claws", accuracy: 50, rof: 1, power: 6, ammo: 1},
+              armor: {name: "Skin", integ: 10, str: 2},
+              enemy: self,
+            },
+            {
+              name: "A Dragon",
+              pos: $.extend({}, self.pos),
+              speed: 3,
+              ev: 10,
+              accuracy: 85,
+              ammo: 5,
+              weapon: { name: "Claws", accuracy: 80, rof: 1, power: 14, ammo: 2},
+              armor: {name: "Scales", integ: 12, str: 4},
+              enemy: self,
+            },
+            {
+              name: "A wild bug",
+              pos: $.extend({}, self.pos),
+              enemy: self,
+            },
+            {
+              name: "A Potato",
+              pos: $.extend({}, self.pos),
+              enemy: self,
+            },
+          ])
+        )
       }
     }
 
@@ -469,6 +507,8 @@ var exit = null
       {
         p.enemy.Attack()
       }
+
+      p.ammo = min(p.ammo_total, p.ammo + 1)
 
       // Reset the action
       p.prev_action()
