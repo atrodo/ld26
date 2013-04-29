@@ -38,6 +38,7 @@
 
     </style>
     <script src="aux/jquery-1.9.0.min.js"></script>
+    <script src="aux/bootstrap.min.js"></script>
     <script src="fission_engine/fission.js"></script>
   </head>
   <body>

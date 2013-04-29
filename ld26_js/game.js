@@ -385,6 +385,70 @@ var exit = null
       self.pos.y += y_move
 
     }
+
+    self.Exit = function()
+    {
+      $.each(squad, function(i, p)
+      {
+        if (p.pos.x != exit.x || p.pos.y != exit.y)
+        {
+          p.upstairs = true
+          p.hp = 0
+        }
+      })
+
+      var scores = [
+        squad[0].upstairs ? 0 : squad[0].xp + squad[0].hp,
+        squad[1].upstairs ? 0 : squad[1].xp + squad[1].hp,
+        squad[2].upstairs ? 0 : squad[2].xp + squad[2].hp,
+        squad[3].upstairs ? 0 : squad[3].xp + squad[3].hp,
+      ]
+
+      var total = 0
+      var multi = 0
+      $.each(scores, function(i, v)
+      {
+        if (v > 0)
+          multi++
+        total += v
+      })
+
+      $("<div/>")
+        .addClass("modal")
+        .append($("<div/>")
+          .addClass("modal-header")
+          .append('<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>')
+          .append("<h1>Congratulations</h1>")
+        )
+        .append($("<div/>")
+          .addClass("modal-body")
+          .append("<h2>You have successfully exited</h2>")
+          .append("<h3>Your Score:</h3>")
+          .append($("<dl class='dl-horizontal'>")
+            .append("<dt>Squad member '" + squad[0].name + "'</dt>")
+            .append("<dd>" + (squad[0].upstairs ? "0 (left upstairs)" : scores[0]) + "</dd>")
+          )
+          .append($("<dl class='dl-horizontal'>")
+            .append("<dt>Squad member '" + squad[1].name + "'</dt>")
+            .append("<dd>" + (squad[1].upstairs ? "0 (left upstairs)" : scores[1]) + "</dd>")
+          )
+          .append($("<dl class='dl-horizontal'>")
+            .append("<dt>Squad member '" + squad[2].name + "'</dt>")
+            .append("<dd>" + (squad[2].upstairs ? "0 (left upstairs)" : scores[2]) + "</dd>")
+          )
+          .append($("<dl class='dl-horizontal'>")
+            .append("<dt>Squad member '" + squad[3].name + "'</dt>")
+            .append("<dd>" + (squad[3].upstairs ? "0 (left upstairs)" : scores[3]) + "</dd>")
+          )
+          .append($("<dl class='dl-horizontal'>")
+            .append("<dt>Total</dt>")
+            .append("<dd>" + (total * multi) + "</dd>")
+          )
+          .append("<small>Refresh to restart</small>")
+        )
+        .modal()
+      runtime.stop_runtime()
+    }
   }
 
   var end_turn = function()
